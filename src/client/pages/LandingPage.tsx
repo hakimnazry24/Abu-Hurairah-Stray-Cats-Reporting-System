@@ -16,8 +16,8 @@ export default function LandingPage() {
           A platform for IIUM community to direct their reports regarding stray
           cats to Abu Hurairah club.
         </p>
-        <Link to={"/make-report"}>
-            <button className="p-3 rounded-xl bg-sky-400 text-white font-semibold mt-5 hover:scale-110 transition ease-in-out active:opacity-80">
+        <Link to={"/make-report"} className="mt-5">
+            <button className="p-3 rounded-xl bg-sky-400 text-white font-semibold hover:scale-110 transition ease-in-out active:opacity-80">
               Make report
             </button>
         </Link>
