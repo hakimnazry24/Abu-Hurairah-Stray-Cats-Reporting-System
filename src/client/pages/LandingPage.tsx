@@ -13,7 +13,7 @@ export default function LandingPage() {
           </h1>
         </div>
         <p className="text-slate-500">
-          A platform for IIUM community to direct their reports regarding stray
+          A platform for IIUM community to direct reports regarding stray
           cats to Abu Hurairah club.
         </p>
         <Link to={"/make-report"} className="mt-5">

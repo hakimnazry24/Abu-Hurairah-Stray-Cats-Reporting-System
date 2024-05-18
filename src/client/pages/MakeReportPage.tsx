@@ -1,27 +1,28 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function MakeReportPage() {
-  const [selectedImage, setSelectedImage] = useState(null);
-
+  const [selectedImage, setSelectedImage] = useState<any>();
+  const navigate = useNavigate();
   async function submitReport(e: any) {
     e.preventDefault();
 
     const formData = new FormData(e.target);
-    console.log(formData)
+    console.log(formData);
     // console.log(data.image)
     try {
       const res = await fetch("http://localhost:3000/api/submit-report", {
         method: "post",
-       
-        body: formData
+        body: formData,
       });
 
       if (res.status == 200) {
         window.alert("Successfully submit report");
+        navigate("/successful");
       } else if (res.status == 400) {
         window.alert("System not accept report");
       } else if (res.status == 500) {
-        window.alert("Something wrong in the server")
+        window.alert("Something wrong in the server");
       }
     } catch (err) {
       console.log("cannot submit report. Something is wrong ...");
@@ -64,17 +65,16 @@ export default function MakeReportPage() {
               </div>
             )}
           </div>
-          <form onSubmit={submitReport} encType={'multipart/form-data'}>
+          <form onSubmit={submitReport} encType={"multipart/form-data"}>
             <input
               required
               className="mt-5"
               type="file"
-              
               name="cat_image"
               // Event handler to capture file selection and update the state
               onChange={(event) => {
-                console.log(event.target.files[0]); // Log the selected file
-                setSelectedImage(event.target.files[0]); // Update the state with the selected file
+                console.log(event.target.files![0]); // Log the selected file
+                setSelectedImage(event.target.files![0]); // Update the state with the selected file
               }}
             />
             <div className="mt-5">

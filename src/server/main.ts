@@ -7,7 +7,8 @@ import { error } from "console";
 const db = new sqlite3.Database("./database.db");
 const upload = multer({ dest: "uploads/" });
 
-type Report = {
+export type Report = {
+  id: number;
   image: string;
   location_1: string;
   location_2: string;
@@ -15,6 +16,8 @@ type Report = {
   contact_number: string;
   email_address: string;
   description: string;
+  status: "Need for Review" | "Reviewed" | "Report complete";
+  date_created: Date;
 };
 
 const app = express();
@@ -30,7 +33,9 @@ db.serialize(() => {
     location_3 TEXT NOT NULL,
     contact_number STRING NOT NULL,
     email_address STRING NOT NULL,
-    description STRING NOT NULL
+    description STRING NOT NULL,
+    status STRING NOT NULL,
+    date_created DATETIME NOT NULL
   )`,
     (error) => {
       console.log("Successfully create Report table");
@@ -43,6 +48,8 @@ app.get("/hello", (_, res) => {
 });
 
 app.post("/api/submit-report", upload.single("cat_image"), (req, res, next) => {
+  const current_date = new Date().getDate;
+
   const cat_image = req.file;
   const {
     location_1,
@@ -62,7 +69,7 @@ app.post("/api/submit-report", upload.single("cat_image"), (req, res, next) => {
   console.log(description);
 
   db.run(
-    "INSERT INTO Report (image, location_1, location_2, location_3, contact_number, email_address, description) VALUES (?, ?, ?, ?, ?, ?, ?)",
+    "INSERT INTO Report (image, location_1, location_2, location_3, contact_number, email_address, description, status, date_created) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
     [
       cat_image,
       location_1,
@@ -71,6 +78,8 @@ app.post("/api/submit-report", upload.single("cat_image"), (req, res, next) => {
       contact_number,
       email_address,
       description,
+      "Need for Review", //default value
+      current_date,
     ],
     (error) => {
       if (error) {
@@ -82,6 +91,34 @@ app.post("/api/submit-report", upload.single("cat_image"), (req, res, next) => {
       return res.sendStatus(200);
     }
   );
+});
+
+app.get("/api/reports", (req, res) => {
+  db.all("SELECT * FROM Report", (err, rows) => {
+    if (err) {
+      console.log("Something wrong with getting Reports");
+      return res.sendStatus(500);
+    }
+
+    if (rows) {
+      return res.send(rows);
+    } else {
+      console.log("Reports not found");
+      return res.sendStatus(404);
+    }
+  });
+});
+
+app.post("/api/change-status", (req, res) => {
+  const { id, status }: Report = req.body;
+
+  db.run("UPDATE Report SET status = ? WHERE id = ?", [status, id], (error) => {
+    if (error) {
+      console.log("Cannot change status of report due to server problem");
+      return res.sendStatus(500);
+    }
+    return res.sendStatus(200);
+  });
 });
 
 ViteExpress.listen(app, 3000, () =>

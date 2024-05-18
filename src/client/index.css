@@ -1,3 +1,12 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    tr th {
+      @apply p-3;
+    }
+    tr td {
+      @apply p-3;
+    }
+  }
