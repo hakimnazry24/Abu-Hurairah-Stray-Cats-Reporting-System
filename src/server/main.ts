@@ -5,7 +5,7 @@ import multer from "multer";
 import { error } from "console";
 
 const db = new sqlite3.Database("./database.db");
-const upload = multer()
+const upload = multer({ dest: "uploads/" });
 
 type Report = {
   image: string;
@@ -24,7 +24,7 @@ db.serialize(() => {
   db.run(
     `CREATE TABLE IF NOT EXISTS Report (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    image STRING NOT NULL,
+    image BLOB NOT NULL,
     location_1 TEXT NOT NULL,
     location_2 TEXT NOT NULL,
     location_3 TEXT NOT NULL,
@@ -42,9 +42,9 @@ app.get("/hello", (_, res) => {
   res.send("Hello Vite + React + TypeScript!");
 });
 
-app.post("/api/submit-report", (req, res) => {
+app.post("/api/submit-report", upload.single("cat_image"), (req, res, next) => {
+  const cat_image = req.file;
   const {
-    image,
     location_1,
     location_2,
     location_3,
@@ -53,7 +53,7 @@ app.post("/api/submit-report", (req, res) => {
     description,
   }: Report = req.body;
 
-  console.log(image);
+  console.log(cat_image);
   console.log(location_1);
   console.log(location_2);
   console.log(location_3);
@@ -63,6 +63,15 @@ app.post("/api/submit-report", (req, res) => {
 
   db.run(
     "INSERT INTO Report (image, location_1, location_2, location_3, contact_number, email_address, description) VALUES (?, ?, ?, ?, ?, ?, ?)",
+    [
+      cat_image,
+      location_1,
+      location_2,
+      location_3,
+      contact_number,
+      email_address,
+      description,
+    ],
     (error) => {
       if (error) {
         console.log("server side problem. cannot add report into database");

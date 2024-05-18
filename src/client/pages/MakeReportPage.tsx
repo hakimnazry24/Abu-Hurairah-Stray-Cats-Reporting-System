@@ -7,23 +7,13 @@ export default function MakeReportPage() {
     e.preventDefault();
 
     const formData = new FormData(e.target);
-    const data = {
-      image: formData.get("cat_image"),
-      location_1: formData.get("location_1"),
-      location_2: formData.get("location_2"),
-      location_3: formData.get("location_3"),
-      contact_number: formData.get("contact_number"),
-      email_address: formData.get("email_address"),
-      description: formData.get("description"),
-    };
+    console.log(formData)
     // console.log(data.image)
     try {
       const res = await fetch("http://localhost:3000/api/submit-report", {
         method: "post",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
+       
+        body: formData
       });
 
       if (res.status == 200) {
