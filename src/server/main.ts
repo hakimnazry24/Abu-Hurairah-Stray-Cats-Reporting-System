@@ -2,7 +2,7 @@ import express from "express";
 import ViteExpress from "vite-express";
 import sqlite3 from "sqlite3";
 import multer from "multer";
-import { error } from "console";
+import cors from "cors";
 
 const db = new sqlite3.Database("./database.db");
 const upload = multer({ dest: "uploads/" });
@@ -21,6 +21,7 @@ export type Report = {
 };
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 
 db.serialize(() => {
