@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
-import ReportCard from "../components/ReportRow";
 import type { Report } from "../../server/main";
 import ReportRow from "../components/ReportRow";
-import { table } from "console";
 import EmptyRow from "../components/EmptyRow";
 
 export default function AdminPage() {
