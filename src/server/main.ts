@@ -93,6 +93,22 @@ app.post("/api/submit-report", upload.single("cat_image"), (req, res, next) => {
   );
 });
 
+app.get("/api/report/:id", (req, res) => {
+  const id = req.params.id;
+  db.get("SELECT * FROM Report WHERE id = ?", [id], (err, row) => {
+    if (err) {
+      console.log(`cannot read report ID ${id}`);
+      return res.sendStatus(500);
+    }
+
+    if (row) {
+      return res.send(row);
+    } else {
+      return res.sendStatus(404);
+    }
+  });
+});
+
 app.get("/api/reports", (req, res) => {
   db.all("SELECT * FROM Report", (err, rows) => {
     if (err) {

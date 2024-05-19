@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
-import ReportCard from "./components/ReportRow";
+import ReportCard from "../components/ReportRow";
 import type { Report } from "../../server/main";
-import ReportRow from "./components/ReportRow";
+import ReportRow from "../components/ReportRow";
+import { table } from "console";
+import EmptyRow from "../components/EmptyRow";
 
 export default function AdminPage() {
   const [reports, setReports] = useState<Report[]>([]);
+  const [isLoading, setisLoading] = useState(true);
   const [filterOption, setFilterOption] = useState("No filter");
   const [filteredReport, setFilteredReport] = useState<Report[]>([]);
 
@@ -13,14 +16,14 @@ export default function AdminPage() {
       const res = await fetch("http://localhost:3000/api/reports");
       const data: Report[] = await res.json();
       setReports(data);
+      setisLoading(false);
     } catch (err) {
       console.log("cannot read report");
     }
   }
 
   function filterReport() {
-    
-     if (filterOption == "Need for Review") {
+    if (filterOption == "Need for Review") {
       setFilteredReport(
         reports.filter((report) => report.status == "Need for Review")
       );
@@ -83,8 +86,9 @@ export default function AdminPage() {
           </div>
         </div>
         <div className="flex flex-col">
-          <table className="text-center border-2 border-slate-500 rounded-xl">
-            <thead className="bg-sky-500 text-white font-semibold">
+          {isLoading ? (
+            <table className="text-center border-2 border-slate-500 rounded-xl opacity-20 animate-pulse">
+            <thead className="bg-slate-500 text-white font-semibold">
               <tr className="p-5">
                 <th>Id</th>
                 <th>Location 1</th>
@@ -99,15 +103,40 @@ export default function AdminPage() {
               </tr>
             </thead>
             <tbody>
-              {filterOption == "No filter"
-                ? reports.map((report) => (
-                    <ReportRow key={report.id} {...report}></ReportRow>
-                  ))
-                : filteredReport.map((report) => (
-                    <ReportRow key={report.id} {...report}></ReportRow>
-                  ))}
+            <EmptyRow></EmptyRow>
+            <EmptyRow></EmptyRow>
+            <EmptyRow></EmptyRow>
+            <EmptyRow></EmptyRow>
+            <EmptyRow></EmptyRow>
             </tbody>
           </table>
+          ) : (
+            <table className="text-center border-2 border-slate-500 rounded-xl">
+              <thead className="bg-sky-500 text-white font-semibold">
+                <tr className="p-5">
+                  <th>Id</th>
+                  <th>Location 1</th>
+                  <th>Location 2</th>
+                  <th>Location 3</th>
+                  <th>Contact number</th>
+                  <th>Email address</th>
+                  <th>Description</th>
+                  <th>Status</th>
+                  <th>Date created</th>
+                  <th>Options</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filterOption == "No filter"
+                  ? reports.map((report) => (
+                      <ReportRow key={report.id} {...report}></ReportRow>
+                    ))
+                  : filteredReport.map((report) => (
+                      <ReportRow key={report.id} {...report}></ReportRow>
+                    ))}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
     </>

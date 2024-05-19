@@ -1,8 +1,10 @@
 import { useState } from "react";
-import { Report } from "../../../server/main";
+import { Report } from "../../server/main";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function ReportRow(props: Report) {
   const [status, setStatus] = useState(props.status);
+  const navigate = useNavigate();
 
   async function changeReportStatus(
     id: number,
@@ -46,9 +48,11 @@ export default function ReportRow(props: Report) {
       <td>{props.status}</td>
       <td>{props.date_created}</td>
       <td>
-        <button className="bg-sky-500 p-2 text-white font-semibold rounded-2xl mx-1">
-          Details
-        </button>
+        <Link to={`./report/${props.id}`}>
+          <button className="bg-sky-500 p-2 text-white font-semibold rounded-2xl mx-1">
+            Details
+          </button>
+        </Link>
         {status == "Need for Review" ? (
           <button
             className="bg-orange-500 p-2 text-white font-semibold rounded-2xl mx-1"
