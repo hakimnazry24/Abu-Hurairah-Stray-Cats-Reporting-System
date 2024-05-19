@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function MakeReportPage() {
   const [selectedImage, setSelectedImage] = useState<any>();
@@ -11,27 +12,33 @@ export default function MakeReportPage() {
     console.log(formData);
     // console.log(data.image)
     try {
+      const toastLoad = toast.loading("Submitting report ...");
       const res = await fetch("http://localhost:3000/api/submit-report", {
         method: "post",
         body: formData,
       });
-
+      await new Promise((resolve) => setTimeout(resolve, 3000)).then(() => {
+        toast.dismiss(toastLoad);
+      }); //fake promise for satisfaction purpose HAHA
       if (res.status == 200) {
-        window.alert("Successfully submit report");
-        navigate("/successful");
+        toast.success("Report submitted successfully");
+        setTimeout(() => {
+          navigate("/successful");
+        }, 1000);
       } else if (res.status == 400) {
-        window.alert("System not accept report");
+        toast.error("System not accepting report");
       } else if (res.status == 500) {
-        window.alert("Something wrong in the server");
+        toast.error("Something wrong in the server");
       }
     } catch (err) {
-      console.log("cannot submit report. Something is wrong ...");
+      toast.error("cannot submit report. Something is wrong ...");
     }
   }
 
   return (
     <>
       <div className="p-16  flex justify-center ">
+        <Toaster position="top-center" />
         <div>
           <h1 className="text-3xl mb-2 text-center font-semibold">
             Make report
@@ -120,7 +127,7 @@ export default function MakeReportPage() {
               <div>
                 <p className="mt-5">Email address</p>
                 <input
-                  type="text"
+                  type="email"
                   name="email_address"
                   id="email_address"
                   className="border-2 border-slate-500 rounded-xl p-2 "
