@@ -11,7 +11,11 @@ export default function AdminPage() {
 
   async function getReports() {
     try {
-      const res = await fetch("http://localhost:3000/api/reports");
+      const res = await fetch(
+        process.env.NODE_ENV == "development"
+          ? `${process.env.DEVELOPMENT_URL!}/api/reports`
+          : `${process.env.PRODUCTION_URL!}/api/report`
+      );
       const data: Report[] = await res.json();
       setReports(data);
       setisLoading(false);
@@ -86,28 +90,28 @@ export default function AdminPage() {
         <div className="flex flex-col">
           {isLoading ? (
             <table className="text-center border-2 border-slate-500 rounded-xl opacity-20 animate-pulse">
-            <thead className="bg-slate-500 text-white font-semibold">
-              <tr className="p-5">
-                <th>Id</th>
-                <th>Location 1</th>
-                <th>Location 2</th>
-                <th>Location 3</th>
-                <th>Contact number</th>
-                <th>Email address</th>
-                <th>Description</th>
-                <th>Status</th>
-                <th>Date created</th>
-                <th>Options</th>
-              </tr>
-            </thead>
-            <tbody>
-            <EmptyRow></EmptyRow>
-            <EmptyRow></EmptyRow>
-            <EmptyRow></EmptyRow>
-            <EmptyRow></EmptyRow>
-            <EmptyRow></EmptyRow>
-            </tbody>
-          </table>
+              <thead className="bg-slate-500 text-white font-semibold">
+                <tr className="p-5">
+                  <th>Id</th>
+                  <th>Location 1</th>
+                  <th>Location 2</th>
+                  <th>Location 3</th>
+                  <th>Contact number</th>
+                  <th>Email address</th>
+                  <th>Description</th>
+                  <th>Status</th>
+                  <th>Date created</th>
+                  <th>Options</th>
+                </tr>
+              </thead>
+              <tbody>
+                <EmptyRow></EmptyRow>
+                <EmptyRow></EmptyRow>
+                <EmptyRow></EmptyRow>
+                <EmptyRow></EmptyRow>
+                <EmptyRow></EmptyRow>
+              </tbody>
+            </table>
           ) : (
             <table className="text-center border-2 border-slate-500 rounded-xl">
               <thead className="bg-sky-500 text-white font-semibold">

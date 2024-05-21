@@ -12,7 +12,11 @@ export default function ReportDetailsPage() {
   const [isLoading, setisLoading] = useState(true);
   async function getReport(id: string) {
     try {
-      const res = await fetch(`http://localhost:3000/api/report/${id}`);
+      const res = await fetch(
+        process.env.NODE_ENV == "development"
+          ? `${process.env.DEVELOPMENT_URL!}/api/report/${id}`
+          : `${process.env.PRODUCTION_URL!}/api/report/${id}`
+      );
       const data: Report = await res.json();
 
       if (res.status == 200) {
@@ -36,17 +40,26 @@ export default function ReportDetailsPage() {
     <>
       <div className="mx-20 my-10">
         <div className="mb-5">
-            <h1 className="text-4xl font-semibold mb-3">
-              Report ID {report?.id} Details
-            </h1>
-            <div className="mb-1">
-                <p className="text-lg font-semibold">Status:</p>
-                <p className={`inline-block text-white font-semibold p-3 rounded-2xl ${report?.status == "Need for Review" || report?.status == "Reviewed" ? "bg-orange-500" : "bg-green-500"}`}>{report?.status}</p>
-            </div>
-            <div>
-                <p className="text-lg font-semibold">Date created:</p>
-                <p>{report?.date_created}</p>
-            </div>
+          <h1 className="text-4xl font-semibold mb-3">
+            Report ID {report?.id} Details
+          </h1>
+          <div className="mb-1">
+            <p className="text-lg font-semibold">Status:</p>
+            <p
+              className={`inline-block text-white font-semibold p-3 rounded-2xl ${
+                report?.status == "Need for Review" ||
+                report?.status == "Reviewed"
+                  ? "bg-orange-500"
+                  : "bg-green-500"
+              }`}
+            >
+              {report?.status}
+            </p>
+          </div>
+          <div>
+            <p className="text-lg font-semibold">Date created:</p>
+            <p>{report?.date_created}</p>
+          </div>
         </div>
         <div className="grid grid-cols-3 gap-20">
           <div className="col-span-1">
@@ -80,8 +93,8 @@ export default function ReportDetailsPage() {
               </div>
             </div>
             <div>
-                <p className="text-lg font-semibold">Description: </p>
-                <p>{report?.description}</p>
+              <p className="text-lg font-semibold">Description: </p>
+              <p>{report?.description}</p>
             </div>
           </div>
         </div>

@@ -3,6 +3,7 @@ import ViteExpress from "vite-express";
 import sqlite3 from "sqlite3";
 import multer from "multer";
 import cors from "cors";
+import 'dotenv/config'
 
 const db = new sqlite3.Database("./database.db");
 const upload = multer({ dest: "uploads/" });
@@ -138,6 +139,7 @@ app.post("/api/change-status", (req, res) => {
   });
 });
 
-ViteExpress.listen(app, 3000, () =>
+const PORT: number = parseInt(process.env.PORT!);
+ViteExpress.listen(app, PORT, () =>
   console.log("Server is listening on port 3000...")
 );

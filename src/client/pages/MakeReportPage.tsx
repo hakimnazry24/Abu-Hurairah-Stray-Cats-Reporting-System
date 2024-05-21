@@ -15,7 +15,9 @@ export default function MakeReportPage() {
       const toastLoad = toast.loading("Submitting report ...");
       const formData = new FormData(e.target);
       formData.append("cat_image", selectedImage);
-      const res = await fetch("http://localhost:3000/api/submit-report", {
+      const res = await fetch(process.env.NODE_ENV == "development"
+          ? `${process.env.DEVELOPMENT_URL!}/api/submit-report`
+          : `${process.env.PRODUCTION_URL!}/api/submit-report`, {
         method: "post",
         body: formData,
       });
